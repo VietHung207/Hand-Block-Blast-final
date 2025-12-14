@@ -2,12 +2,12 @@ import cv2                  # thư viện Opencv: lấy cam
 import mediapipe as mp      # thư viện của google : nhận diện tay
 import math                 # thư viện toán: tính khoảng cách
 import random               # thư viện ngẫu nhiên: dùng để lấy hình dạng khối + màu khối ngẫu nhiên
-import os
+import os                   # thư viện hđh: kiểm tra file score
 
 # CẤU HÌNH
 WIDTH, HEIGHT = 1080, 720   # kích thước cửa sổ game 1080x720
 CELL_SIZE = 60              # kích thước của khối ô vuông
-GRID_SIZE = 8               # KÍCH THƯỚC CỦA BÀN CỜ: 8X8
+GRID_SIZE =8               # KÍCH THƯỚC CỦA BÀN CỜ: 8X8
 
 # Tính toán vị trí
 GRID_OFFSET_X = 50
@@ -41,6 +41,7 @@ class HandTracker:
         self.hands = self.mp_hands.Hands()      # KHỞI TẠO NHẬN DIỆN NGÓN TAY
         self.cap = cv2.VideoCapture(0)          # KHỞI TẠO MỞ CAMERA
         
+        #làm mượt: giúp giảm rung và ổn định hơn
         self.prev_px, self.prev_py = 0, 0       # LƯU VỊ TRÍ NGÓN TAY Ở KHUNG HÌNH TRƯỚC
         self.smooth_factor = 0.5                # HỆ SỐ LÀM MƯỢT
 
@@ -52,18 +53,18 @@ class HandTracker:
         rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)    # đổi hệ mẩu từ BGR sang RGB cho media pipe xử lí
         results = self.hands.process(rgb)   #gửi ảnh để xử lí
         
-        data = {"detected": False, 
+        data = {"detected": False,       # Biến data
                 "px": self.prev_px, 
                 "py": self.prev_py,
                 "pinching": False}
 
         if results.multi_hand_landmarks:
-            data["detected"] = True
+            data["detected"] = True     #Nếu thấy tay thì thì lấy danh sách các điểm khớp tay
             lm = results.multi_hand_landmarks[0].landmark
             
-            # Tọa độ thô
-            raw_px = int(lm[8].x * WIDTH)
-            raw_py = int(lm[8].y * HEIGHT)
+            # Tọa độ ngón tay
+            raw_px = int(lm[8].x * WIDTH)   #8 là ngón trỏ
+            raw_py = int(lm[8].y * HEIGHT)  #4 là ngón cái
             tx = int(lm[4].x * WIDTH)
             ty = int(lm[4].y * HEIGHT)
 
@@ -93,7 +94,7 @@ class GameLogic:
         self.high_score = self.load_high_score()
         self.state = "MENU"
         self.game_started = False
-        self.holding = False
+        self.holding = True
         self.held_idx = -1
 
     def load_high_score(self):
@@ -154,7 +155,7 @@ if __name__ == "__main__":
     import pygame
     pygame.init()
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
-    pygame.display.set_caption("Backend Debug View")
+    pygame.display.set_caption("Backend Test Logic View")
     clock = pygame.time.Clock()
     
     logic = GameLogic()
