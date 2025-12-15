@@ -83,7 +83,7 @@ while running:
         for r in range(GRID_SIZE):
             for c in range(GRID_SIZE):
                 x, y = GRID_OFFSET_X + c*CELL_SIZE, GRID_OFFSET_Y + r*CELL_SIZE
-                pygame.draw.rect(screen, (30, 30, 50), (x, y, CELL_SIZE, CELL_SIZE), 1)
+                pygame.draw.rect(screen, (100, 100, 100), (x, y, CELL_SIZE, CELL_SIZE), 1)
                 if logic.grid[r][c]: draw_block(screen, x, y, logic.grid[r][c])
 
         # Vẽ UI
@@ -142,7 +142,7 @@ while running:
         pygame.draw.circle(screen, WHITE, (px, py), 12, 1)
 
     pygame.display.flip()
-    clock.tick(120)
+    clock.tick(240)
 
 tracker.release()
 pygame.quit()
